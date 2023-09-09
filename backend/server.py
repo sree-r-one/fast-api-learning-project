@@ -2,6 +2,8 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
+from models import Post
 
 # endregion IMPORT
 
@@ -21,6 +23,11 @@ app.add_middleware(
 @app.get("/")
 async def root():
     return {"message": "Hello"}
+
+
+@app.post("/create")
+async def root(post: Post):
+    return {"message": post}
 
 
 if __name__ == "__main__":
