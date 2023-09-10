@@ -11,9 +11,16 @@ router = APIRouter(prefix="/api/v1/posts", tags=["posts"])
 
 
 # Get
-@router.get("/")
-async def get_posts():
-    return {"message": "Hello"}
+@router.get("/", status_code=status.HTTP_200_OK)
+async def get_posts(client: mot.AsyncIOMotorClient = Depends(connect_to_mongodb)):
+    # Find Collection
+    collection = client["posts"]
+    posts = []
+    # Find Documents
+    async for post in collection.find():
+        post.pop("_id")  # Remove _id from dict
+        posts.append(dict(post))
+    return {"posts": posts}
 
 
 @router.get("/{id}", status_code=status.HTTP_200_OK)
